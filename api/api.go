@@ -26,5 +26,8 @@ func writeError(w http.ResponseWriter, message string, code int) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
-	json.NewEncoder(w).Encode(response)
+	err := json.NewEncoder(w).Encode(response)
+	if err != nil {
+		panic(err)
+	}
 }
