@@ -51,13 +51,13 @@ func Handler(r *chi.Mux) {
 	// })
 }
 
-func Helper(w http.ResponseWriter, r *http.Request) (string, float64, float64) {
+func Helper(w http.ResponseWriter, r *http.Request) (string, float64, float64, error) {
 	// create temp to either rename or delete later
 	file, err := os.CreateTemp("", "upload_*")
 	if err != nil {
 		log.Error("Failed to create temp file:", err)
 		api.InternalErrorHandler(w)
-		return "", 0, 0
+		return "", 0, 0, err
 	}
 	tempFilePath := file.Name()
 	defer os.Remove(tempFilePath)
@@ -67,7 +67,7 @@ func Helper(w http.ResponseWriter, r *http.Request) (string, float64, float64) {
 	if err != nil {
 		log.Error(err)
 		api.RequestErrorHandler(w, errors.New("Failed to save file"))
-		return "", 0, 0
+		return "", 0, 0, err
 	}
 
 	// calc size in MB and validate it
@@ -77,14 +77,14 @@ func Helper(w http.ResponseWriter, r *http.Request) (string, float64, float64) {
 		err := errors.New("File size should be less than 25MB, got: " + strconv.FormatFloat(sizeMB, 'f', -1, 64))
 		log.Error(err)
 		api.RequestErrorHandler(w, err)
-		return "", 0, 0
+		return "", 0, 0, err
 	}
 
 	// check if the uploaded file is a video or not
 	if !isVideoFile(tempFilePath) {
 		log.Error(err)
 		api.RequestErrorHandler(w, errors.New("Uploaded file is not a video"))
-		return "", 0, 0
+		return "", 0, 0, err
 	}
 
 	// if is video, get the duration in seconds and validate it
@@ -92,7 +92,7 @@ func Helper(w http.ResponseWriter, r *http.Request) (string, float64, float64) {
 	if err != nil {
 		log.Error(err)
 		api.RequestErrorHandler(w, err)
-		return "", 0, 0
+		return "", 0, 0, err
 	}
 
 	// assumption: 5 sec is the min and 25 sec is the max
@@ -100,7 +100,7 @@ func Helper(w http.ResponseWriter, r *http.Request) (string, float64, float64) {
 		err := errors.New("Video duration should be between 5 and 25 seconds, got: " + strconv.FormatFloat(duration, 'f', -1, 64))
 		log.Error(err)
 		api.RequestErrorHandler(w, err)
-		return "", 0, 0
+		return "", 0, 0, err
 	}
 
 	// if everything works fine, save the file and return the data
@@ -108,7 +108,7 @@ func Helper(w http.ResponseWriter, r *http.Request) (string, float64, float64) {
 	if err := os.MkdirAll(uploadPath, os.ModePerm); err != nil {
 		log.Error("Failed to create uploads directory:", err)
 		api.RequestErrorHandler(w, errors.New("Failed to create uploads directory"))
-		return "", 0, 0
+		return "", 0, 0, err
 	}
 
 	filename := fmt.Sprintf("%s_%d", uuid.New().String(), time.Now().Unix())
@@ -117,10 +117,10 @@ func Helper(w http.ResponseWriter, r *http.Request) (string, float64, float64) {
 	if err := os.Rename(tempFilePath, finalFilePath); err != nil {
 		log.Error("Failed to move file:", err)
 		api.InternalErrorHandler(w)
-		return "", 0, 0
+		return "", 0, 0, err
 	}
 
-	return filename, sizeMB, duration
+	return filename, sizeMB, duration, err
 }
 
 func isVideoFile(filePath string) bool {
