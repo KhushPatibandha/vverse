@@ -20,6 +20,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/KhushPatibandha/vverse/api"
+	db "github.com/KhushPatibandha/vverse/internal/DB"
 	"github.com/KhushPatibandha/vverse/internal/middleware"
 )
 
@@ -39,10 +40,10 @@ func Handler(r *chi.Mux) {
 	// })
 
 	// Router to let user merge two video files
-	// r.Route("/api/v1/merge", func(router chi.Router) {
-	// 	router.Use(middleware.Auth)
-	// 	router.Post("/", MergeVideo)
-	// })
+	r.Route("/api/v1/merge", func(router chi.Router) {
+		router.Use(middleware.Auth)
+		router.Post("/", MergeVideo)
+	})
 
 	// Router to let user get a link with time-based expiry
 	r.Route("/api/v1/link", func(router chi.Router) {
@@ -77,10 +78,8 @@ func Helper(w http.ResponseWriter, r *http.Request) (string, float64, float64, e
 
 	// calc size in MB and validate it
 	// assumption: 25MB is the max size with no min size
-	sizeMB := float64(size) / (1024 * 1024)
-	if sizeMB > 25 {
-		err := errors.New("File size should be less than 25MB, got: " + strconv.FormatFloat(sizeMB, 'f', -1, 64))
-		log.Error(err)
+	sizeMB, err := checkSize(size)
+	if err != nil {
 		api.RequestErrorHandler(w, err)
 		return "", 0, 0, err
 	}
@@ -101,31 +100,37 @@ func Helper(w http.ResponseWriter, r *http.Request) (string, float64, float64, e
 	}
 
 	// assumption: 5 sec is the min and 25 sec is the max
-	if duration < 5 || duration > 25 {
-		err := errors.New("Video duration should be between 5 and 25 seconds, got: " + strconv.FormatFloat(duration, 'f', -1, 64))
-		log.Error(err)
+	if err := checkDuration(duration); err != nil {
 		api.RequestErrorHandler(w, err)
 		return "", 0, 0, err
 	}
 
 	// if everything works fine, save the file and return the data
-	uploadPath := "./uploads/"
-	if err := os.MkdirAll(uploadPath, os.ModePerm); err != nil {
-		log.Error("Failed to create uploads directory:", err)
-		api.RequestErrorHandler(w, errors.New("Failed to create uploads directory"))
+	filename, err := uploadInStorange(tempFilePath)
+	if err != nil {
+		api.RequestErrorHandler(w, err)
 		return "", 0, 0, err
 	}
 
-	filename := fmt.Sprintf("%s_%d", uuid.New().String(), time.Now().Unix())
-	finalFilePath := filepath.Join(uploadPath, filename)
+	return filename, sizeMB, duration, nil
+}
 
-	if err := os.Rename(tempFilePath, finalFilePath); err != nil {
-		log.Error("Failed to move file:", err)
-		api.InternalErrorHandler(w)
-		return "", 0, 0, err
+func SaveInDb(name string, size float64, duration float64) (int64, error) {
+	query := `INSERT INTO videos (name, size, duration, created_at) VALUES (?, ?, ?, ?)`
+	res, err := db.ExecCmd(query, name, size, duration, time.Now())
+	if err != nil {
+		err := fmt.Errorf("Failed to insert into database: %v", err)
+		log.Error(err)
+		return 0, err
 	}
 
-	return filename, sizeMB, duration, err
+	vId, err := res.LastInsertId()
+	if err != nil {
+		err := fmt.Errorf("Failed to get last insert id: %v", err)
+		log.Error(err)
+		return 0, err
+	}
+	return vId, nil
 }
 
 func isVideoFile(filePath string) bool {
@@ -162,4 +167,40 @@ func getDuration(filePath string) (float64, error) {
 		return 0, errors.New("Failed to parse duration")
 	}
 	return duration, nil
+}
+
+func checkSize(size int64) (float64, error) {
+	sizeMB := float64(size) / (1024 * 1024)
+	if sizeMB > 25 {
+		err := errors.New("File size should be less than 25MB, got: " + strconv.FormatFloat(sizeMB, 'f', -1, 64))
+		log.Error(err)
+		return 0, err
+	}
+	return sizeMB, nil
+}
+
+func checkDuration(duration float64) error {
+	if duration < 5 || duration > 25 {
+		err := errors.New("Video duration should be between 5 and 25 seconds, got: " + strconv.FormatFloat(duration, 'f', -1, 64))
+		log.Error(err)
+		return err
+	}
+	return nil
+}
+
+func uploadInStorange(tempFilePath string) (string, error) {
+	uploadPath := "./uploads/"
+	if err := os.MkdirAll(uploadPath, os.ModePerm); err != nil {
+		log.Error("Failed to create uploads directory:", err)
+		return "", err
+	}
+
+	filename := fmt.Sprintf("%s_%d", uuid.New().String(), time.Now().Unix())
+	finalFilePath := filepath.Join(uploadPath, filename)
+
+	if err := os.Rename(tempFilePath, finalFilePath); err != nil {
+		log.Error("Failed to move file:", err)
+		return "", err
+	}
+	return filename, nil
 }
