@@ -28,6 +28,10 @@ func ExecCmd(query string, args ...any) (sql.Result, error) {
 	return db.Exec(query, args...)
 }
 
+func QueryRow(query string, args ...any) *sql.Row {
+	return db.QueryRow(query, args...)
+}
+
 func openDB() error {
 	dataB, err := sql.Open("sqlite3", "./sqlite3.db")
 	if err != nil {

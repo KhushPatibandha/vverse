@@ -45,10 +45,15 @@ func Handler(r *chi.Mux) {
 	// })
 
 	// Router to let user get a link with time-based expiry
-	// r.Route("/api/v1/link", func(router chi.Router) {
-	// 	router.Use(middleware.Auth)
-	// 	router.Get("/", GetLink)
-	// })
+	r.Route("/api/v1/link", func(router chi.Router) {
+		router.Use(middleware.Auth)
+		router.Get("/", GetLink)
+	})
+
+	// Router temp link to uploaded vids
+	r.Route("/api/v1/uploads", func(router chi.Router) {
+		router.Get("/{link}", RedirectVid)
+	})
 }
 
 func Helper(w http.ResponseWriter, r *http.Request) (string, float64, float64, error) {
