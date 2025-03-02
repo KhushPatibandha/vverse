@@ -5,6 +5,7 @@ pkgs.mkShell {
         pkgs.sqlite
         pkgs.ffmpeg-full
         pkgs.go-swag
+        pkgs.go
 	];
 }
 

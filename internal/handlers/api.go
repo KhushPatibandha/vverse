@@ -78,8 +78,9 @@ func Helper(w http.ResponseWriter, r *http.Request) (string, float64, float64, e
 	// copy data to temp
 	size, err := io.Copy(file, r.Body)
 	if err != nil {
+		err := errors.New("Failed to save file")
 		log.Error(err)
-		api.RequestErrorHandler(w, errors.New("Failed to save file"))
+		api.RequestErrorHandler(w, err)
 		return "", 0, 0, err
 	}
 
@@ -93,8 +94,9 @@ func Helper(w http.ResponseWriter, r *http.Request) (string, float64, float64, e
 
 	// check if the uploaded file is a video or not
 	if !isVideoFile(tempFilePath) {
+		err := errors.New("Uploaded file is not a video")
 		log.Error(err)
-		api.RequestErrorHandler(w, errors.New("Uploaded file is not a video"))
+		api.RequestErrorHandler(w, err)
 		return "", 0, 0, err
 	}
 
