@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -77,17 +76,13 @@ func MergeVideo(w http.ResponseWriter, r *http.Request) {
 	tempOutputPath := "./uploads/temp_" + v1Name + "_" + v2Name + ".mp4"
 
 	//  ffmpeg -f concat -safe 0 -i concat.txt -c:v libx264 -c:a aac output.mp4
-	cmd := exec.Command("ffmpeg", "-f", "concat", "-safe", "0", "-i", tempFile.Name(), "-c:v", "libx264", "-c:a", "aac", tempOutputPath)
+	// cmd := exec.Command("ffmpeg", "-f", "concat", "-safe", "0", "-i", tempFile.Name(), "-c:v", "libx264", "-c:a", "aac", tempOutputPath)
 
-	var stdoutStderr bytes.Buffer
-	cmd.Stdout = &stdoutStderr
-	cmd.Stderr = &stdoutStderr
+	// ffmpeg -f concat -safe 0 -i input.txt -c copy output.mp4
+	cmd := exec.Command("ffmpeg", "-f", "concat", "-safe", "0", "-i", tempFile.Name(), "-c", "copy", tempOutputPath)
 
 	err = cmd.Run()
 	if err != nil {
-		log.Errorf("FFmpeg command failed: %v", err)
-		log.Errorf("FFmpeg output: %s", stdoutStderr.String())
-
 		err := errors.New("error merging files: " + err.Error())
 		log.Error(err)
 		api.RequestErrorHandler(w, err)

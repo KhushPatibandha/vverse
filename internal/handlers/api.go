@@ -34,10 +34,10 @@ func Handler(r *chi.Mux) {
 	})
 
 	// Router to let user trim a video file
-	// r.Route("/api/v1/trim", func(router chi.Router) {
-	// 	router.Use(middleware.Auth)
-	// 	router.Put("/", TrimVideo)
-	// })
+	r.Route("/api/v1/trim", func(router chi.Router) {
+		router.Use(middleware.Auth)
+		router.Put("/", TrimVideo)
+	})
 
 	// Router to let user merge two video files
 	r.Route("/api/v1/merge", func(router chi.Router) {
