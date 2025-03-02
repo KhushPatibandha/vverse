@@ -4,6 +4,7 @@ pkgs.mkShell {
 	buildInputs = [
         pkgs.sqlite
         pkgs.ffmpeg-full
+        pkgs.go-swag
 	];
 }
 
