@@ -18,14 +18,21 @@ import (
 	"github.com/google/uuid"
 	"github.com/h2non/filetype"
 	log "github.com/sirupsen/logrus"
+	"github.com/swaggo/http-swagger/v2"
 
 	"github.com/KhushPatibandha/vverse/api"
+	_ "github.com/KhushPatibandha/vverse/cmd/api/docs"
+	"github.com/KhushPatibandha/vverse/consts"
 	db "github.com/KhushPatibandha/vverse/internal/DB"
 	"github.com/KhushPatibandha/vverse/internal/middleware"
 )
 
 func Handler(r *chi.Mux) {
 	r.Use(chiMiddleware.StripSlashes)
+
+	r.Get("/swagger/*", httpSwagger.Handler(
+		httpSwagger.URL("http://localhost:"+consts.LOCALHOSTPORT+"/swagger/doc.json"),
+	))
 
 	// Route to let user upload a video file
 	r.Route("/api/v1/video", func(router chi.Router) {

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -15,6 +16,18 @@ import (
 	db "github.com/KhushPatibandha/vverse/internal/DB"
 )
 
+// @Summary Merge two videos
+// @Description Merges two videos based on their IDs and returns a new merged video ID
+// @Tags video
+// @Produce json
+// @Param v1 query int true "First video ID"
+// @Param v2 query int true "Second video ID"
+// @Security ApiKeyAuth
+// @Success 200 {object} api.Response
+// @Failure 400 {object} map[string]string
+// @Failure 401 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/merge [post]
 func MergeVideo(w http.ResponseWriter, r *http.Request) {
 	v1Str := r.URL.Query().Get("v1")
 	v2Str := r.URL.Query().Get("v2")
@@ -81,8 +94,15 @@ func MergeVideo(w http.ResponseWriter, r *http.Request) {
 	// ffmpeg -f concat -safe 0 -i input.txt -c copy output.mp4
 	cmd := exec.Command("ffmpeg", "-f", "concat", "-safe", "0", "-i", tempFile.Name(), "-c", "copy", tempOutputPath)
 
+	var stdoutStderr bytes.Buffer
+	cmd.Stdout = &stdoutStderr
+	cmd.Stderr = &stdoutStderr
+
 	err = cmd.Run()
 	if err != nil {
+		log.Errorf("FFmpeg command failed: %v", err)
+		log.Errorf("FFmpeg output: %s", stdoutStderr.String())
+
 		err := errors.New("error merging files: " + err.Error())
 		log.Error(err)
 		api.RequestErrorHandler(w, err)
@@ -151,6 +171,8 @@ func MergeVideo(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(response.Code)
 	err = json.NewEncoder(w).Encode(response)
 	if err != nil {
-		panic(err)
+		log.Error(err)
+		api.InternalErrorHandler(w)
+		return
 	}
 }

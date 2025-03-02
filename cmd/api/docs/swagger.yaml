@@ -1,0 +1,232 @@
+basePath: /api/v1
+definitions:
+  api.Response:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+info:
+  contact:
+    email: khush.patibandha@gmail.com
+    name: Khush Patibandha
+  description: These are the APIs for VideoVerse take home assignment.
+  title: VideoVerse API
+  version: "1.0"
+paths:
+  /api/v1/link:
+    get:
+      description: Generates a time-limited access link for a video using its ID
+      parameters:
+      - description: Video ID
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.Response'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Generate a temporary link for a video
+      tags:
+      - video
+  /api/v1/merge:
+    post:
+      description: Merges two videos based on their IDs and returns a new merged video
+        ID
+      parameters:
+      - description: First video ID
+        in: query
+        name: v1
+        required: true
+        type: integer
+      - description: Second video ID
+        in: query
+        name: v2
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.Response'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Merge two videos
+      tags:
+      - video
+  /api/v1/trim:
+    put:
+      consumes:
+      - '*/*'
+      description: Trims a video to the specified start and end time
+      parameters:
+      - description: Video ID
+        in: query
+        name: id
+        required: true
+        type: integer
+      - description: Start time in seconds
+        in: query
+        name: s
+        required: true
+        type: integer
+      - description: End time in seconds
+        in: query
+        name: e
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.Response'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Trim a video
+      tags:
+      - video
+  /api/v1/uploads/{link}:
+    get:
+      description: Given a valid temporary link, redirects to the video file
+      parameters:
+      - description: Temporary video link
+        in: path
+        name: link
+        required: true
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: Video file served
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Redirect to the uploaded video
+      tags:
+      - video
+  /api/v1/video:
+    post:
+      consumes:
+      - application/octet-stream
+      description: Uploads a video file and returns a video ID for further operations
+      parameters:
+      - description: Binary video file
+        in: body
+        name: video
+        required: true
+        schema:
+          items:
+            type: integer
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.Response'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Upload a video
+      tags:
+      - video
+swagger: "2.0"

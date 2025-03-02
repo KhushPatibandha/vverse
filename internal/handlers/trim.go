@@ -15,6 +15,20 @@ import (
 	db "github.com/KhushPatibandha/vverse/internal/DB"
 )
 
+// @Summary Trim a video
+// @Description Trims a video to the specified start and end time
+// @Tags video
+// @Accept */*
+// @Produce json
+// @Param id query int true "Video ID"
+// @Param s query int true "Start time in seconds"
+// @Param e query int true "End time in seconds"
+// @Security ApiKeyAuth
+// @Success 200 {object} api.Response
+// @Failure 400 {object} map[string]string
+// @Failure 401 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/trim [put]
 func TrimVideo(w http.ResponseWriter, r *http.Request) {
 	vIdStr := r.URL.Query().Get("id")
 	vId, err := strconv.Atoi(vIdStr)
@@ -100,12 +114,14 @@ func TrimVideo(w http.ResponseWriter, r *http.Request) {
 
 	response := api.Response{
 		Code:    http.StatusOK,
-		Message: "Video trimmed successfullt, you can get the trimmed video with the same ID",
+		Message: "Video trimmed successfully, you can get the trimmed video with the same ID",
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(response.Code)
 	err = json.NewEncoder(w).Encode(response)
 	if err != nil {
-		panic(err)
+		log.Error(err)
+		api.InternalErrorHandler(w)
+		return
 	}
 }

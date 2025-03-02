@@ -3,7 +3,6 @@ package middleware
 import (
 	"errors"
 	"net/http"
-	"time"
 
 	log "github.com/sirupsen/logrus"
 
@@ -24,7 +23,7 @@ func Auth(next http.Handler) http.Handler {
 		}
 
 		// simulate fetching token from database
-		time.Sleep(time.Second * 2)
+		// time.Sleep(time.Second * 2)
 
 		if token != "someCrazySecureToken" {
 			log.Error(UnAuthError)
