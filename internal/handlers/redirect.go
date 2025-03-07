@@ -19,7 +19,6 @@ import (
 // @Param link path string true "Temporary video link"
 // @Success 200 "Video file served"
 // @Failure 400 {object} map[string]string
-// @Failure 404 {object} map[string]string
 // @Failure 500 {object} map[string]string
 // @Router /api/v1/uploads/{link} [get]
 func RedirectVid(w http.ResponseWriter, r *http.Request) {

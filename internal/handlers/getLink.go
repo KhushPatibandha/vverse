@@ -24,7 +24,6 @@ import (
 // @Security ApiKeyAuth
 // @Success 200 {object} api.Response
 // @Failure 400 {object} map[string]string
-// @Failure 401 {object} map[string]string
 // @Failure 500 {object} map[string]string
 // @Router /api/v1/link [get]
 func GetLink(w http.ResponseWriter, r *http.Request) {
