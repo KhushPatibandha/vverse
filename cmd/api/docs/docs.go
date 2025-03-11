@@ -18,7 +18,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/v1/link": {
+        "/link": {
             "get": {
                 "security": [
                     {
@@ -52,34 +52,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/api.Response"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/api.Response"
                         }
                     }
                 }
             }
         },
-        "/api/v1/merge": {
+        "/merge": {
             "post": {
                 "security": [
                     {
@@ -120,34 +105,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/api.Response"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/api.Response"
                         }
                     }
                 }
             }
         },
-        "/api/v1/trim": {
+        "/trim": {
             "put": {
                 "security": [
                     {
@@ -155,9 +125,6 @@ const docTemplate = `{
                     }
                 ],
                 "description": "Trims a video to the specified start and end time",
-                "consumes": [
-                    "*/*"
-                ],
                 "produces": [
                     "application/json"
                 ],
@@ -198,34 +165,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/api.Response"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/api.Response"
                         }
                     }
                 }
             }
         },
-        "/api/v1/uploads/{link}": {
+        "/uploads/{link}": {
             "get": {
                 "description": "Given a valid temporary link, redirects to the video file",
                 "produces": [
@@ -257,15 +209,6 @@ const docTemplate = `{
                             }
                         }
                     },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -278,7 +221,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/video": {
+        "/video": {
             "post": {
                 "security": [
                     {
@@ -286,9 +229,6 @@ const docTemplate = `{
                     }
                 ],
                 "description": "Uploads a video file and returns a video ID for further operations",
-                "consumes": [
-                    "application/octet-stream"
-                ],
                 "produces": [
                     "application/json"
                 ],
@@ -296,20 +236,6 @@ const docTemplate = `{
                     "video"
                 ],
                 "summary": "Upload a video",
-                "parameters": [
-                    {
-                        "description": "Binary video file",
-                        "name": "video",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "integer"
-                            }
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -320,28 +246,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/api.Response"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/api.Response"
                         }
                     }
                 }
@@ -359,6 +270,13 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`

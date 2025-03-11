@@ -93,8 +93,8 @@ func Helper(w http.ResponseWriter, r *http.Request) (string, float64, float64, e
 	}
 
 	// check if the uploaded file is a video or not
-	if !isVideoFile(tempFilePath) {
-		err := errors.New("Uploaded file is not a video")
+	err = isVideoFile(tempFilePath)
+	if err != nil {
 		log.Error(err)
 		api.RequestErrorHandler(w, err)
 		return "", 0, 0, err
@@ -142,19 +142,19 @@ func SaveInDb(name string, size float64, duration float64) (int64, error) {
 	return vId, nil
 }
 
-func isVideoFile(filePath string) bool {
+func isVideoFile(filePath string) error {
 	file, _ := os.Open(filePath)
 	defer file.Close()
 
 	head := make([]byte, 261)
 	_, err := file.Read(head)
 	if err != nil {
-		return false
+		return err
 	}
 	if filetype.IsVideo(head) {
-		return true
+		return nil
 	}
-	return false
+	return errors.New("Not a video file")
 }
 
 func getDuration(filePath string) (float64, error) {

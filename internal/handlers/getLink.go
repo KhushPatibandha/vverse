@@ -16,16 +16,16 @@ import (
 	db "github.com/KhushPatibandha/vverse/internal/DB"
 )
 
-// @Summary Generate a temporary link for a video
-// @Description Generates a time-limited access link for a video using its ID
-// @Tags video
-// @Produce json
-// @Param id query int true "Video ID"
-// @Security ApiKeyAuth
-// @Success 200 {object} api.Response
-// @Failure 400 {object} map[string]string
-// @Failure 500 {object} map[string]string
-// @Router /api/v1/link [get]
+// @Summary		Generate a temporary link for a video
+// @Description	Generates a time-limited access link for a video using its ID
+// @Tags			video
+// @Produce		json
+// @Param			id	query	int	true	"Video ID"
+// @Security		ApiKeyAuth
+// @Success		200	{object}	api.Response
+// @Failure		400	{object}	api.Response
+// @Failure		500	{object}	api.Response
+// @Router			/link [get]
 func GetLink(w http.ResponseWriter, r *http.Request) {
 	vIdStr := r.URL.Query().Get("id")
 	vId, err := strconv.Atoi(vIdStr)

@@ -15,7 +15,7 @@ info:
   title: VideoVerse API
   version: "1.0"
 paths:
-  /api/v1/link:
+  /link:
     get:
       description: Generates a time-limited access link for a video using its ID
       parameters:
@@ -34,27 +34,17 @@ paths:
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/api.Response'
         "500":
           description: Internal Server Error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/api.Response'
       security:
       - ApiKeyAuth: []
       summary: Generate a temporary link for a video
       tags:
       - video
-  /api/v1/merge:
+  /merge:
     post:
       description: Merges two videos based on their IDs and returns a new merged video
         ID
@@ -79,30 +69,18 @@ paths:
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/api.Response'
         "500":
           description: Internal Server Error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/api.Response'
       security:
       - ApiKeyAuth: []
       summary: Merge two videos
       tags:
       - video
-  /api/v1/trim:
+  /trim:
     put:
-      consumes:
-      - '*/*'
       description: Trims a video to the specified start and end time
       parameters:
       - description: Video ID
@@ -130,27 +108,17 @@ paths:
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/api.Response'
         "500":
           description: Internal Server Error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/api.Response'
       security:
       - ApiKeyAuth: []
       summary: Trim a video
       tags:
       - video
-  /api/v1/uploads/{link}:
+  /uploads/{link}:
     get:
       description: Given a valid temporary link, redirects to the video file
       parameters:
@@ -170,12 +138,6 @@ paths:
             additionalProperties:
               type: string
             type: object
-        "404":
-          description: Not Found
-          schema:
-            additionalProperties:
-              type: string
-            type: object
         "500":
           description: Internal Server Error
           schema:
@@ -185,20 +147,9 @@ paths:
       summary: Redirect to the uploaded video
       tags:
       - video
-  /api/v1/video:
+  /video:
     post:
-      consumes:
-      - application/octet-stream
       description: Uploads a video file and returns a video ID for further operations
-      parameters:
-      - description: Binary video file
-        in: body
-        name: video
-        required: true
-        schema:
-          items:
-            type: integer
-          type: array
       produces:
       - application/json
       responses:
@@ -209,24 +160,19 @@ paths:
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/api.Response'
         "500":
           description: Internal Server Error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/api.Response'
       security:
       - ApiKeyAuth: []
       summary: Upload a video
       tags:
       - video
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

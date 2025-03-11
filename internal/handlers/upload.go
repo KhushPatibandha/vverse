@@ -10,17 +10,15 @@ import (
 	"github.com/KhushPatibandha/vverse/api"
 )
 
-// @Summary Upload a video
-// @Description Uploads a video file and returns a video ID for further operations
-// @Tags video
-// @Accept octet-stream
-// @Produce  json
-// @Param video body []byte true "Binary video file"
-// @Security ApiKeyAuth
-// @Success 200 {object} api.Response
-// @Failure 400 {object} map[string]string
-// @Failure 500 {object} map[string]string
-// @Router /api/v1/video [post]
+// @Summary		Upload a video
+// @Description	Uploads a video file and returns a video ID for further operations
+// @Tags			video
+// @Produce		json
+// @Security		ApiKeyAuth
+// @Success		200	{object}	api.Response
+// @Failure		400	{object}	api.Response
+// @Failure		500	{object}	api.Response
+// @Router			/video [post]
 func UploadVideo(w http.ResponseWriter, r *http.Request) {
 	name, size, duration, err := Helper(w, r)
 	if err != nil {

@@ -13,12 +13,15 @@ import (
 	"github.com/KhushPatibandha/vverse/internal/handlers"
 )
 
-// @title			VideoVerse API
-// @version		1.0
-// @description	These are the APIs for VideoVerse take home assignment.
-// @contact.name	Khush Patibandha
-// @contact.email	khush.patibandha@gmail.com
-// @BasePath		/api/v1
+//	@title						VideoVerse API
+//	@version					1.0
+//	@description				These are the APIs for VideoVerse take home assignment.
+//	@contact.name				Khush Patibandha
+//	@contact.email				khush.patibandha@gmail.com
+//	@BasePath					/api/v1
+//	@SecurityDefinitions.apikey	ApiKeyAuth
+//	@in							header
+//	@name						Authorization
 func main() {
 	log.SetFormatter(&log.TextFormatter{FullTimestamp: true})
 	log.SetLevel(log.DebugLevel)

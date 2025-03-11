@@ -16,17 +16,17 @@ import (
 	db "github.com/KhushPatibandha/vverse/internal/DB"
 )
 
-// @Summary Merge two videos
-// @Description Merges two videos based on their IDs and returns a new merged video ID
-// @Tags video
-// @Produce json
-// @Param v1 query int true "First video ID"
-// @Param v2 query int true "Second video ID"
-// @Security ApiKeyAuth
-// @Success 200 {object} api.Response
-// @Failure 400 {object} map[string]string
-// @Failure 500 {object} map[string]string
-// @Router /api/v1/merge [post]
+// @Summary		Merge two videos
+// @Description	Merges two videos based on their IDs and returns a new merged video ID
+// @Tags			video
+// @Produce		json
+// @Param			v1	query	int	true	"First video ID"
+// @Param			v2	query	int	true	"Second video ID"
+// @Security		ApiKeyAuth
+// @Success		200	{object}	api.Response
+// @Failure		400	{object}	api.Response
+// @Failure		500	{object}	api.Response
+// @Router			/merge [post]
 func MergeVideo(w http.ResponseWriter, r *http.Request) {
 	v1Str := r.URL.Query().Get("v1")
 	v2Str := r.URL.Query().Get("v2")
@@ -132,7 +132,8 @@ func MergeVideo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !isVideoFile(tempOutputPath) {
+	err = isVideoFile(tempOutputPath)
+	if err != nil {
 		log.Error(err)
 		api.RequestErrorHandler(w, errors.New("Uploaded file is not a video"))
 		return

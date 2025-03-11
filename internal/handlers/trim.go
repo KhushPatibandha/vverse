@@ -15,19 +15,20 @@ import (
 	db "github.com/KhushPatibandha/vverse/internal/DB"
 )
 
-// @Summary Trim a video
-// @Description Trims a video to the specified start and end time
-// @Tags video
-// @Accept */*
-// @Produce json
-// @Param id query int true "Video ID"
-// @Param s query int true "Start time in seconds"
-// @Param e query int true "End time in seconds"
-// @Security ApiKeyAuth
-// @Success 200 {object} api.Response
-// @Failure 400 {object} map[string]string
-// @Failure 500 {object} map[string]string
-// @Router /api/v1/trim [put]
+//	@Summary		Trim a video
+//	@Description	Trims a video to the specified start and end time
+//	@Tags			video
+//	@Produce		json
+//	@Param			id	query	int	true	"Video ID"
+//	@Param			s	query	int	true	"Start time in seconds"
+//	@Param			e	query	int	true	"End time in seconds"
+//	@Security		ApiKeyAuth
+//
+// @Success		200	{object}	api.Response
+// @Failure		400	{object}	api.Response
+// @Failure		500	{object}	api.Response
+//
+//	@Router			/trim [put]
 func TrimVideo(w http.ResponseWriter, r *http.Request) {
 	vIdStr := r.URL.Query().Get("id")
 	vId, err := strconv.Atoi(vIdStr)
