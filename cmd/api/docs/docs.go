@@ -226,6 +226,9 @@ const docTemplate = `{
                     }
                 ],
                 "description": "Uploads a video file and returns a video ID for further operations",
+                "consumes": [
+                    "multipart/form-data"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -233,6 +236,15 @@ const docTemplate = `{
                     "video"
                 ],
                 "summary": "Upload a video",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "The video file to upload",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",

@@ -65,6 +65,21 @@ func Handler(r *chi.Mux) {
 }
 
 func Helper(w http.ResponseWriter, r *http.Request) (string, float64, float64, error) {
+	err := r.ParseMultipartForm(25 << 20) // 25MB
+	if err != nil {
+		log.Error("Failed to parse form:", err)
+		api.RequestErrorHandler(w, err)
+		return "", 0, 0, err
+	}
+
+	fileFormData, _, err := r.FormFile("file")
+	if err != nil {
+		log.Error("Failed to get file from form:", err)
+		api.RequestErrorHandler(w, err)
+		return "", 0, 0, err
+	}
+	defer fileFormData.Close()
+
 	// create temp to either rename or delete later
 	file, err := os.CreateTemp("", "upload_*")
 	if err != nil {
@@ -76,7 +91,7 @@ func Helper(w http.ResponseWriter, r *http.Request) (string, float64, float64, e
 	defer os.Remove(tempFilePath)
 
 	// copy data to temp
-	size, err := io.Copy(file, r.Body)
+	size, err := io.Copy(file, fileFormData)
 	if err != nil {
 		err := errors.New("Failed to save file")
 		log.Error(err)
@@ -154,7 +169,7 @@ func isVideoFile(filePath string) error {
 	if filetype.IsVideo(head) {
 		return nil
 	}
-	return errors.New("Not a video file")
+	return errors.New("Not a video file. got: " + http.DetectContentType(head))
 }
 
 func getDuration(filePath string) (float64, error) {

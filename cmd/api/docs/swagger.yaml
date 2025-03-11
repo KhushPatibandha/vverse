@@ -147,7 +147,15 @@ paths:
       - video
   /video:
     post:
+      consumes:
+      - multipart/form-data
       description: Uploads a video file and returns a video ID for further operations
+      parameters:
+      - description: The video file to upload
+        in: formData
+        name: file
+        required: true
+        type: file
       produces:
       - application/json
       responses:
