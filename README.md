@@ -39,6 +39,8 @@ chmod +x runTests.sh
 Demo Vid:
 https://drive.google.com/file/d/1r2xUqpgS7PcqhVBB6KyuuPgQMpadt29r/view?usp=drive_link
 
+NOTE: Upload video via form-data and not direct binary (updated after i recoreded the video)
+
 Assumptions:
 
 - Since nothing realated to user data was specified so there is no DB for users and hence i have hard coded a single static token to check for authentication.
@@ -70,6 +72,8 @@ https://stackoverflow.com/questions/7333232/how-to-concatenate-two-mp4-files-usi
 https://shotstack.io/learn/use-ffmpeg-to-concatenate-video/
 
 ### Upload a Video
+
+NOTE: Upload video via form-data and not direct binary (updated after i recoreded the video)
 
 ```http
   POST /api/v1/video
