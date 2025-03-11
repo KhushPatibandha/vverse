@@ -12,15 +12,15 @@ import (
 	db "github.com/KhushPatibandha/vverse/internal/DB"
 )
 
-//	@Summary		Redirect to the uploaded video
-//	@Description	Given a valid temporary link, redirects to the video file
-//	@Tags			video
-//	@Produce		octet-stream
-//	@Param			link	path	string	true	"Temporary video link"
-//	@Success		200		"Video file served"
-//	@Failure		400		{object}	map[string]string
-//	@Failure		500		{object}	map[string]string
-//	@Router			/uploads/{link} [get]
+// @Summary		Redirect to the uploaded video
+// @Description	Given a valid temporary link, redirects to the video file
+// @Tags			video
+// @Produce		octet-stream
+// @Param			link	path		string	true	"Temporary video link"
+// @Success		200		{file}		"Video file served (Open in new tab or download)"
+// @Failure		400		{object}	api.Response
+// @Failure		500		{object}	api.Response
+// @Router			/uploads/{link} [get]
 func RedirectVid(w http.ResponseWriter, r *http.Request) {
 	link := chi.URLParam(r, "link")
 	if link == "" {

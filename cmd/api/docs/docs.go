@@ -198,24 +198,21 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Video file served"
+                        "description": "Video file served (Open in new tab or download)",
+                        "schema": {
+                            "type": "file"
+                        }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/api.Response"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/api.Response"
                         }
                     }
                 }

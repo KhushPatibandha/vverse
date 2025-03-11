@@ -131,19 +131,17 @@ paths:
       - application/octet-stream
       responses:
         "200":
-          description: Video file served
+          description: Video file served (Open in new tab or download)
+          schema:
+            type: file
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/api.Response'
         "500":
           description: Internal Server Error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/api.Response'
       summary: Redirect to the uploaded video
       tags:
       - video
